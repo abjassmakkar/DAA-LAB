@@ -1,0 +1,63 @@
+#include<iostream>
+#include<vector>
+#include<climits>
+using namespace std;
+
+struct Edge{
+    int u,v,w;
+};
+
+int main(){
+    int n,e;
+    cout<<"Enter number of vertices and edges: ";
+    cin>>n>>e;
+
+    vector<Edge> edges(e);
+
+    cout<<"Enter edges (source destination weight):\n";
+    for(int i=0;i<e;i++){
+        cin>>edges[i].u>>edges[i].v>>edges[i].w;
+    }
+
+    int src;
+    cout<<"Enter source vertex: ";
+    cin>>src;
+
+    vector<int> dist(n,INT_MAX);
+    dist[src]=0;
+
+    for(int i=1;i<n;i++){
+        bool changed=false;
+
+        for(auto edge:edges){
+            if(dist[edge.u]!=INT_MAX&&
+               dist[edge.u]+edge.w<dist[edge.v]){
+                dist[edge.v]=dist[edge.u]+edge.w;
+                changed=true;
+            }
+        }
+
+        if(!changed)
+            break;
+    }
+
+    for(auto edge:edges){
+        if(dist[edge.u]!=INT_MAX&&
+           dist[edge.u]+edge.w<dist[edge.v]){
+            cout<<"Graph contains a negative weight cycle\n";
+            return 0;
+        }
+    }
+
+    cout<<"Shortest distances from source "<<src<<":\n";
+    for(int i=0;i<n;i++){
+        cout<<src<<" to "<<i<<" = ";
+        if(dist[i]==INT_MAX)
+            cout<<"INF";
+        else
+            cout<<dist[i];
+        cout<<"\n";
+    }
+
+    return 0;
+}
